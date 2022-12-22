@@ -17,7 +17,8 @@ describe("Governor smart contracts", function () {
     console.log( "Uri", uri.address);
     console.log( "Deployer", deployer.address);
     console.log( "Anyone", anyone.address);
-    console.log( "Member", member.address);
+    console.log( "Member1", member1.address);
+    console.log( "Member2", member2.address);
     console.log( "Admin", admin.address);
 
     const hardhatToken = await Token.deploy(minter.address, burner.address, uri.address, admin.address, '');
