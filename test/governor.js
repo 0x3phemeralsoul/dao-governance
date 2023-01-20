@@ -63,6 +63,30 @@ describe("Governor smart contracts", function () {
     console.log("PROPOSER_ROLE", ethers.utils.keccak256(ethers.utils.toUtf8Bytes("PROPOSER_ROLE")));
     console.log("EXECUTOR_ROLE", ethers.utils.keccak256(ethers.utils.toUtf8Bytes("EXECUTOR_ROLE")));   
 
+
+
+    // TODO: set governor as Admin, Uri Minter and Burner on NFT token
+    console.log("DEFAULT_ADMIN_ROLE", ethers.utils.keccak256(ethers.utils.toUtf8Bytes("DEFAULT_ADMIN_ROLE")));
+    console.log("URI_ROLE", ethers.utils.keccak256(ethers.utils.toUtf8Bytes("URI_ROLE")));
+    console.log("BURNER_ROLE", ethers.utils.keccak256(ethers.utils.toUtf8Bytes("BURNER_ROLE")));
+    console.log("MINTER_ROLE", ethers.utils.keccak256(ethers.utils.toUtf8Bytes("MINTER_ROLE")));
+
+    await hardhatToken.connect(admin).grantRole(ethers.utils.keccak256(ethers.utils.toUtf8Bytes("MINTER_ROLE")),hardhatGovernor.address );
+    await hardhatToken.connect(admin).grantRole(ethers.utils.keccak256(ethers.utils.toUtf8Bytes("BURNER_ROLE")),hardhatGovernor.address );
+    await hardhatToken.connect(admin).grantRole(ethers.utils.keccak256(ethers.utils.toUtf8Bytes("URI_ROLE")),hardhatGovernor.address );
+    await hardhatToken.connect(admin).grantRole(ethers.utils.keccak256(ethers.utils.toUtf8Bytes("DEFAULT_ADMIN_ROLE")),hardhatGovernor.address );
+
+
+    // Admin, Minter, Uri and Burner renounceRole on NFT token
+
+    await hardhatToken.connect(minter).renounceRole(ethers.utils.keccak256(ethers.utils.toUtf8Bytes("MINTER_ROLE")), minter.address);
+    await hardhatToken.connect(burner).renounceRole(ethers.utils.keccak256(ethers.utils.toUtf8Bytes("BURNER_ROLE")), burner.address);
+    await hardhatToken.connect(uri).renounceRole(ethers.utils.keccak256(ethers.utils.toUtf8Bytes("URI_ROLE")), uri.address);
+    await hardhatToken.connect(admin).renounceRole(ethers.utils.keccak256(ethers.utils.toUtf8Bytes("DEFAULT_ADMIN_ROLE")), admin.address);
+
+
+  
+
     // Fixtures can return anything you consider useful for your tests
     return { 
       hardhatToken, 
@@ -117,13 +141,17 @@ describe("Governor smart contracts", function () {
   });
 
 
-  it("Propose to ", async function () {
-    const { hardhatTimelockController, deployer } = await loadFixture(deployTokenFixture);
+  it("Check Token NFT roles are all on governor  ", async function () {
+    const { hardhatToken, hardhatGovernor } = await loadFixture(deployTokenFixture);
 
-    expect(await hardhatTimelockController.hasRole(ethers.utils.keccak256(ethers.utils.toUtf8Bytes("PROPOSER_ROLE")),deployer.address)).to.be.false; 
-    expect(await hardhatTimelockController.hasRole(ethers.utils.keccak256(ethers.utils.toUtf8Bytes("EXECUTOR_ROLE")),deployer.address)).to.be.false;  
-    expect(await hardhatTimelockController.hasRole(ethers.utils.keccak256(ethers.utils.toUtf8Bytes("TIMELOCK_ADMIN_ROLE")),deployer.address)).to.be.false;            
+    expect(await hardhatToken.hasRole(ethers.utils.keccak256(ethers.utils.toUtf8Bytes("MINTER_ROLE")),hardhatGovernor.address)).to.be.true; 
+    expect(await hardhatToken.hasRole(ethers.utils.keccak256(ethers.utils.toUtf8Bytes("BURNER_ROLE")),hardhatGovernor.address)).to.be.true;  
+    expect(await hardhatToken.hasRole(ethers.utils.keccak256(ethers.utils.toUtf8Bytes("URI_ROLE")),hardhatGovernor.address)).to.be.true; 
+    expect(await hardhatToken.hasRole(ethers.utils.keccak256(ethers.utils.toUtf8Bytes("DEFAULT_ADMIN_ROLE")),hardhatGovernor.address)).to.be.true;                       
   });
+
+
+
 
   /*  it("Should not transfer tokens between accounts", async function () {
     const { hardhatToken, minter, anyone } = await loadFixture(deployTokenFixture);
