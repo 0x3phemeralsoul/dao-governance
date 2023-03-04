@@ -150,13 +150,44 @@ describe("Governor smart contracts", function () {
 
 
 
-  it("Propose giving membership to 2 new members", async function () {
+  it("Propose giving membership to 1 new member", async function () {
     const { hardhatToken, hardhatGovernor, memberVoted, member1 } = await loadFixture(deployTokenFixture);
+
+    //Member gets voting power
+    // check that member1 has an NFT in order to create a proposal
+    expect(await hardhatToken.balanceOf(member1.address)).to.equal(1);
+
+    //console.log("Block: ", await time.latestBlock());
+    let votes = await hardhatToken.getVotes(member1.address);
+    //console.log("Votes before delegation: ", votes.toString()); 
+    let tx =  await hardhatToken.connect(member1).delegate(member1.address);
+    let receipt = await tx.wait();
+    votes = await hardhatToken.getVotes(member1.address);
+    //console.log("Votes after delegation: ", votes.toString()); 
+    //Mines blocks to ensure the require statement on Governor.sol on propose function is true: getVotes(_msgSender(), block.number - 1) >= proposalThreshold(),
+    await mine(10);
+    // Create proposal and get a proposalId in return
+    const mintCalldata = hardhatToken.interface.encodeFunctionData("mintNFT", [memberVoted.address] );
+    tx = await hardhatGovernor.connect(member1).propose([hardhatToken.address],[0],[mintCalldata],'Proposal #1: Mint membership');
+    receipt = await tx.wait();
+    //console.log("Proposal ID: ", Number(receipt.events[0].args.proposalId).toString());
+    expect(Number(receipt.events[0].args.proposalId)).to.be.greaterThan(0);
+
+  });
+
+
+
+  it("Cast vote on proposal to add new member", async function () {
+    const { hardhatToken, hardhatGovernor, memberVoted, member1 } = await loadFixture(deployTokenFixture);
+
+    //
+    // Member gets voting power
+    //
+
 
     // check that member1 has an NFT in order to create a proposal
     expect(await hardhatToken.balanceOf(member1.address)).to.equal(1);
 
-    //Mines blocks to ensure the require statement on Governor.sol on propose function is true: getVotes(_msgSender(), block.number - 1) >= proposalThreshold(),
     console.log("Block: ", await time.latestBlock());
     let votes = await hardhatToken.getVotes(member1.address);
     console.log("Votes before delegation: ", votes.toString()); 
@@ -164,13 +195,78 @@ describe("Governor smart contracts", function () {
     let receipt = await tx.wait();
     votes = await hardhatToken.getVotes(member1.address);
     console.log("Votes after delegation: ", votes.toString()); 
+    //Mines blocks to ensure the require statement on Governor.sol on propose function is true: getVotes(_msgSender(), block.number - 1) >= proposalThreshold(),
     await mine(10);
+
+
+    //
     // Create proposal and get a proposalId in return
+    //
+
+
     const mintCalldata = hardhatToken.interface.encodeFunctionData("mintNFT", [memberVoted.address] );
     tx = await hardhatGovernor.connect(member1).propose([hardhatToken.address],[0],[mintCalldata],'Proposal #1: Mint membership');
     receipt = await tx.wait();
     console.log("Proposal ID: ", Number(receipt.events[0].args.proposalId).toString());
     expect(Number(receipt.events[0].args.proposalId)).to.be.greaterThan(0);
+    const proposalId = receipt.events[0].args.proposalId
+
+
+    //
+    // VOTE PROPOSAL
+    //
+    await mine(1); //voting_delay is 1 block
+    const cast_vote =await hardhatGovernor.connect(member1).castVoteWithReason(proposalId, 1, "I like it");
+    receipt = await cast_vote.wait();
+    console.log("Reason: ", receipt.events[0].args.reason);
+    expect(receipt.events[0].args.reason).to.equal("I like it");
+
+  });
+
+
+  it("Cast vote on proposal to add new member", async function () {
+    const { hardhatToken, hardhatGovernor, memberVoted, member1 } = await loadFixture(deployTokenFixture);
+
+    //
+    // Member gets voting power
+    //
+
+
+    // check that member1 has an NFT in order to create a proposal
+    expect(await hardhatToken.balanceOf(member1.address)).to.equal(1);
+
+    console.log("Block: ", await time.latestBlock());
+    let votes = await hardhatToken.getVotes(member1.address);
+    console.log("Votes before delegation: ", votes.toString()); 
+    let tx =  await hardhatToken.connect(member1).delegate(member1.address);
+    let receipt = await tx.wait();
+    votes = await hardhatToken.getVotes(member1.address);
+    console.log("Votes after delegation: ", votes.toString()); 
+    //Mines blocks to ensure the require statement on Governor.sol on propose function is true: getVotes(_msgSender(), block.number - 1) >= proposalThreshold(),
+    await mine(10);
+
+
+    //
+    // Create proposal and get a proposalId in return
+    //
+
+
+    const mintCalldata = hardhatToken.interface.encodeFunctionData("mintNFT", [memberVoted.address] );
+    tx = await hardhatGovernor.connect(member1).propose([hardhatToken.address],[0],[mintCalldata],'Proposal #1: Mint membership');
+    receipt = await tx.wait();
+    console.log("Proposal ID: ", Number(receipt.events[0].args.proposalId).toString());
+    expect(Number(receipt.events[0].args.proposalId)).to.be.greaterThan(0);
+    const proposalId = receipt.events[0].args.proposalId
+
+
+    //
+    // VOTE PROPOSAL
+    //
+    await mine(1); //voting_delay is 1 block
+    const cast_vote =await hardhatGovernor.connect(member1).castVoteWithReason(proposalId, 1, "I like it");
+    receipt = await cast_vote.wait();
+    console.log("Reason: ", receipt.events[0].args.reason);
+    expect(receipt.events[0].args.reason).to.equal("I like it");
 
   });
 
