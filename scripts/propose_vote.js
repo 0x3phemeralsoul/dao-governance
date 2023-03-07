@@ -15,7 +15,7 @@ wallet.provider = provider;
 const signer = wallet.connect(provider);
 
 // https://docs.ethers.io/v5/api/contract/contract
-const PCCBoss = new ethers.Contract(
+const hardhatGovernor = new ethers.Contract(
   process.env.PCCBOSS_CONTRACT_ADDRESS,
   PCCBosscontractInterface,
   signer
@@ -23,7 +23,7 @@ const PCCBoss = new ethers.Contract(
 
 
 // https://docs.ethers.io/v5/api/contract/contract
-const NFT = new ethers.Contract(
+const hardhatToken = new ethers.Contract(
     process.env.NFT_CONTRACT_ADDRESS,
     NFTcontractInterface,
     signer
@@ -31,19 +31,17 @@ const NFT = new ethers.Contract(
 
 async function main() {
 
+    //Delegate to self
+    await hardhatToken.delegate(process.env.MEMBER1_PUBLIC_KEY)
 
-    const latestBlock = await time.latestBlock();
-    const votes = await PCCBoss.getVotes(process.env.MEMBER1_PUBLIC_KEY, latestBlock-1);
-    console.log("Votes: ", votes);
-    //console.log("NFT bakance on signer:", await NFT.balanceOf(process.env.MEMBER1_PUBLIC_KEY) )
     // Create proposal and get a proposalId in return
-    const mintCalldata = NFT.interface.encodeFunctionData("mintNFT", [process.env.MEMBER_VOTED_PUBLIC_KEY] );
+    const mintCalldata = hardhatToken.interface.encodeFunctionData("mintNFT", [process.env.MEMBER_VOTED_PUBLIC_KEY] );
     console.log("mint call DATA: ---------", mintCalldata);
-    const tx = await PCCBoss
-        .connect(signer)
+    const tx = await hardhatGovernor
         .propose([process.env.NFT_CONTRACT_ADDRESS],[0],[mintCalldata],'Proposal #1: Mint membership');
     
-    console.log("TX: ", tx);
+    let receipt = await tx.wait();
+    console.log("ProposalId: ", receipt.events[0].args.proposalId);
 }
 
 main()
