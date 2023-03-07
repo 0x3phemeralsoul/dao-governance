@@ -4,6 +4,7 @@
 require('dotenv').config();
 require("@nomiclabs/hardhat-ethers");
 require("hardhat-gas-reporter");
+require("hardhat-tracer");
 module.exports = {
     solidity: {
         version: "0.8.17",
