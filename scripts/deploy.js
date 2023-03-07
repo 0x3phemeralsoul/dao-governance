@@ -21,10 +21,10 @@ async function main() {
         [process.env.DEPLOYER_PUBLIC_KEY],
         process.env.DEPLOYER_PUBLIC_KEY
         ); //set mindelay to 2 days(172800)
-    console.log("BossMom Contract deployed to address:", hardhatTimelockController.address);
+    console.log("hardhatTimelockController Contract deployed to address:", hardhatTimelockController.address);
 
-    const hardhatGovernor = await Governor.deploy(hardhatToken.address, BossMom.address);
-    console.log("PCCBoss Contract deployed to address:", PCCBoss.address);
+    const hardhatGovernor = await Governor.deploy(hardhatToken.address, hardhatTimelockController.address);
+    console.log("hardhatGovernor Contract deployed to address:", hardhatGovernor.address);
 
 
     //
