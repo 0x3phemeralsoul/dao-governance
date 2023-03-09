@@ -30,19 +30,16 @@ const hardhatToken = new ethers.Contract(
   );
 
 async function main() {
-      //Delegate to self
-      await hardhatToken.delegate(process.env.MEMBER1_PUBLIC_KEY)
-
 
 
     // Create proposal and get a proposalId in return
+    console.log("Proposal ends: ", await hardhatGovernor.proposalDeadline('99301011491081370921425385265785700315509948423946078757943618415147611336444'));
     const mintCalldata = hardhatToken.interface.encodeFunctionData("mintNFT", [process.env.MEMBER_VOTED_PUBLIC_KEY] );
-    console.log("mint call DATA: ---------", mintCalldata);
-    const tx = await hardhatGovernor
-        .propose([process.env.NFT_CONTRACT_ADDRESS],[0],[mintCalldata],'Proposal #1: Mint membership');
-    
-    let receipt = await tx.wait();
-    console.log("ProposalId: ", receipt.events[0].args.proposalId);
+    const descriptionHash = ethers.utils.id('Proposal #1: Mint membership');
+    const queue = await hardhatGovernor.queue([process.env.NFT_CONTRACT_ADDRESS],[0],[mintCalldata], descriptionHash);
+    let receipt = await queue.wait();
+  
+    console.log("ProposalId: ", receipt.events[1].args.proposalId);
 }
 
 main()
