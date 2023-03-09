@@ -58,6 +58,7 @@ contract PCCMembershipNFT is
         _tokenIds.increment();
 
         uint256 newItemId = _tokenIds.current();
+        _delegate(recipient, recipient);
         _safeMint(recipient, newItemId);
 
         return newItemId;

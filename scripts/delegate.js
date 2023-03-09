@@ -8,7 +8,7 @@ const NFTcontractInterface = NFTcontract.abi;
 
 // https://hardhat.org/plugins/nomiclabs-hardhat-ethers.html#provider-object
 let provider = ethers.provider;
-const privateKey = `0x${process.env.MEMBER2_PRIVATE_KEY}`;
+const privateKey = `0x${process.env.MEMBER1_PRIVATE_KEY}`;
 const wallet = new ethers.Wallet(privateKey);
 
 wallet.provider = provider;

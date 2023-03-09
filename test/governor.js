@@ -156,7 +156,8 @@ describe("Governor smart contracts", function () {
     //Member gets voting power
     // check that member1 has an NFT in order to create a proposal
     expect(await hardhatToken.balanceOf(member1.address)).to.equal(1);
-    let tx =  await hardhatToken.connect(member1).delegate(member1.address);
+    let tx;
+    //  await hardhatToken.connect(member1).delegate(member1.address);
     //Mines blocks to ensure the require statement on Governor.sol on propose function is true: getVotes(_msgSender(), block.number - 1) >= proposalThreshold(),
     await mine(10);
     // Create proposal and get a proposalId in return
@@ -181,8 +182,9 @@ describe("Governor smart contracts", function () {
     expect(await hardhatToken.balanceOf(member1.address)).to.equal(1);
 
     let votes = await hardhatToken.getVotes(member1.address);
-    let tx =  await hardhatToken.connect(member1).delegate(member1.address);
-    let receipt = await tx.wait();
+    let tx;
+    //await hardhatToken.connect(member1).delegate(member1.address);
+    //let receipt = await tx.wait();
     votes = await hardhatToken.getVotes(member1.address);
     //Mines blocks to ensure the require statement on Governor.sol on propose function is true: getVotes(_msgSender(), block.number - 1) >= proposalThreshold(),
     await mine(10);
@@ -223,10 +225,11 @@ describe("Governor smart contracts", function () {
     expect(await hardhatToken.balanceOf(member1.address)).to.equal(1);
 
     let votes = await hardhatToken.getVotes(member1.address);
-    let tx =  await hardhatToken.connect(member1).delegate(member1.address);
+    let tx;
+    //await hardhatToken.connect(member1).delegate(member1.address);
     //member2 delegates to itself as well to get 80 of quorum for the vote
-    await hardhatToken.connect(member2).delegate(member2.address);
-    let receipt = await tx.wait();
+    //await hardhatToken.connect(member2).delegate(member2.address);
+    //let receipt = await tx.wait();
     votes = await hardhatToken.getVotes(member1.address);
     //Mines blocks to ensure the require statement on Governor.sol on propose function is true: getVotes(_msgSender(), block.number - 1) >= proposalThreshold(),
     await mine(1);

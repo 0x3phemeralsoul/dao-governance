@@ -31,7 +31,7 @@ const hardhatToken = new ethers.Contract(
 
 async function main() {
       //Delegate to self
-      await hardhatToken.delegate(process.env.MEMBER1_PUBLIC_KEY)
+      //await hardhatToken.delegate(process.env.MEMBER1_PUBLIC_KEY)
 
 
 
