@@ -1,8 +1,6 @@
 require("dotenv").config();
 require("@nomiclabs/hardhat-ethers");
 const { time } = require("@nomicfoundation/hardhat-network-helpers");
-const PCCBosscontract = require("../artifacts/contracts/PCCBoss.sol/PCCBoss.json");
-const PCCBosscontractInterface = PCCBosscontract.abi;
 const NFTcontract = require("../artifacts/contracts/PCCMembershipNFT.sol/PCCMembershipNFT.json");
 const NFTcontractInterface = NFTcontract.abi;
 
