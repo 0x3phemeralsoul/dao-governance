@@ -27,6 +27,7 @@ initialize().then((zokratesProvider) => {
   
     // compilation
     const artifacts = zokratesProvider.compile(source);
+
     outputPeegyArtifacts('artifacts.txt', JSON.stringify(artifacts));
   
     // computation
@@ -39,8 +40,6 @@ initialize().then((zokratesProvider) => {
     "0x6e6c77e8",
     "0x9b6a806a"];
     const { witness, output } = zokratesProvider.computeWitness(artifacts, [["1","2","3","4"], hashedAnswer ]);
-
-    outputPeegyArtifacts('hashedAnswer.txt', JSON.stringify(hashedAnswer));
   
     // run setup
     const keypair = zokratesProvider.setup(artifacts.program);
