@@ -1,6 +1,6 @@
 {
   "name": "hardhat-project",
-  "type":"module",
+  "type": "commojs",
   "devDependencies": {
     "@openzeppelin/hardhat-upgrades": "^1.22.0",
     "chai": "^4.3.4",
@@ -15,6 +15,7 @@
     "@nomiclabs/hardhat-ethers": "^2.2.1",
     "@openzeppelin/contracts": "^4.8.0",
     "dotenv": "^16.0.3",
+    "hardhat-interface-generator": "^0.0.6",
     "hardhat-tracer": "^2.1.2",
     "zokrates-js": "^1.1.5"
   }
