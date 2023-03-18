@@ -22,11 +22,21 @@ The quest creator most pass to the `computeWitness` call 2 values:
 "0x6e6c77e8", 
 "0x9b6a806a"]
 
-the array is passed to the ' hashedAnswer` variable
+the array is passed to the `hashedAnswer` variable
 
 Once the file is setup correctly, then the Quest creator must execute the following command from the root folder of this repo: `node scripts/Zokrates/generate.js`
 The command will output a set of elements:
 1.- On the STDOUT the verifier.sol contract (which is stored in /Governance-artifacts as a file to be deployed).
 2.- The off-chain verification which should out put `true`
-3.- A set of files stored in Peegy-artifacts. Peggy is the user wanting to join the DAO by passing a, hopefully, correct answer to the Quest website and verifier.sol smart contract. She needs a set of files in order to proof she has passed the correct answer: `witness.txt`, `hashedAnswer.txt` a verification keypair `keypair.vk.txt` and the compiled version of the program `artifacts.txt` in order to generate a proof which can be verified by `verityTx()` in verifier.sol
+3.- A set of files stored in Peegy-artifacts. Peggy is the user wanting to join the DAO by passing a, hopefully, correct answer to the Quest website and verifier.sol smart contract. She needs a set of files in order to proof she has passed the correct answer: `hashedAnswer.txt` and a proving keypair `keypair.pk.txt`
 4.- Governance artifacts that are needed is basically verifier.sol
+
+
+## generatePeggyProofs.js
+
+This is the file which commands are ran by the user wanting to join the DAO by passing correct answers.
+The file compiles the source code (which generates a big 329M variable in memory) and then uses the compiled version, the correct answers and a hashed version of the answers to compute a `witness` using `computeWitness` command, if this command fails, then the answers are wrong, it will throw an error `"Execution failed: Assertion failed` and no need to send a transaction to the smart contract at all.
+If the answers are correct a proof is generated which are 3 arrays that need to be passed to the deployed `verifier.sol` `verifyTx()` function and it will confirm that the answers are correct and mint a NFT to the recipient.
+
+## Dapp implementation reco
+Implementing this in a dapp will require the user to compute the witness and the proof in the browser. In a CLI using node it takes 40s. I imagine in a browser it could tend to be more than 1 minute so the UI should let the user know this will take sometime. Also, the browser needs to download the keypair which is 29M. I suggest the browser downloads in the background the file while the user introduces the answers to the quest.
