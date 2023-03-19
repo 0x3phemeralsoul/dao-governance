@@ -1,6 +1,6 @@
 {
   "name": "hardhat-project",
-  "type": "commojs",
+  "type": "commonjs",
   "devDependencies": {
     "@openzeppelin/hardhat-upgrades": "^1.22.0",
     "chai": "^4.3.4",

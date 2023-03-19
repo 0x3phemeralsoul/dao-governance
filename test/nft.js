@@ -7,7 +7,7 @@ chai.use(solidity);
 describe("NFT Token contract", function () {
   async function deployTokenFixture() {
     const [minter, burner, uri, admin, deployer, anyone] = await ethers.getSigners();
-    const Token = await ethers.getContractFactory("NFT", deployer);
+    const Token = await ethers.getContractFactory("PCCMembershipNFT", deployer);
 
     console.log( "Minter", minter.address);
     console.log( "Burner", burner.address);

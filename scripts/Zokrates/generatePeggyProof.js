@@ -1,6 +1,5 @@
 import { initialize } from "zokrates-js";
-import fs from 'fs/promises';
-
+import  fs  from 'fs/promises';
 
 
 async function readArtifacts(filename) {
@@ -35,7 +34,8 @@ async function generateProof() {
   contents = await readArtifacts('hashedAnswer.txt');
   const hashedAnswer = contents.replaceAll('"', "").replaceAll('[','').replaceAll(']','').split(",")
   contents = await readArtifacts('keypair.pk.txt')
-  const keypair = contents.split(",")
+  const keypair = contents.replaceAll('[','').replaceAll(']','').split(",")
+  console.log("KEYPAIR ----------------------------------------------", keypair)
 
 
   //peggy provides to the program an answer that might be valid, if valid, then we continue
@@ -50,9 +50,9 @@ async function generateProof() {
   );
 
   outputPeegyArtifacts('proof.txt', JSON.stringify(proof));
+  outputPeegyArtifacts('proof-easy.txt',JSON.stringify(zokratesProvider.utils.formatProof(proof)));
 
-  console.log("Proof generated. Pass the 3 arrays to verifyTx() on verifier.sol deployed contract.") 
-  console.log(zokratesProvider.utils.formatProof(proof))
+  console.log("Proof generated at proof-easy.txt. Pass the 2 arrays to verifyTx() on verifier.sol deployed contract.") 
 
 
   }

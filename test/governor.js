@@ -7,7 +7,7 @@ chai.use(solidity);
 
 describe("Governor smart contracts", function () {
   async function deployTokenFixture() {
-    const [minter, burner, uri, admin, deployer, anyone, member1, member2, memberVoted] = await ethers.getSigners();
+    const [minter, burner, uri, admin, deployer, anyone, member1, member2, memberVoted, memberQuestWinner] = await ethers.getSigners();
     //Deploy NFT
 
     const Token = await ethers.getContractFactory("PCCMembershipNFT", deployer);
@@ -21,6 +21,7 @@ describe("Governor smart contracts", function () {
     console.log( "Member2", member2.address);
     console.log( "Admin", admin.address);
     console.log("Member voted", memberVoted.address);
+    console.log("Member voted", memberQuestWinner.address);
 
     const hardhatToken = await Token.deploy(minter.address, burner.address, uri.address, admin.address, '');
 
@@ -31,9 +32,19 @@ describe("Governor smart contracts", function () {
     await hardhatToken.connect(minter).mintNFT(member1.address);
     await hardhatToken.connect(minter).mintNFT(member2.address);
 
-    //deploy Governor
+    //deploy Governor and TimelockController
     const Governor = await ethers.getContractFactory("PCCBoss", deployer);
     const TimelockController = await ethers.getContractFactory("TimelockController", deployer);
+
+    //deploy verifier and pairing
+    const Pairing = await ethers.getContractFactory("Pairing", deployer);
+    const hardhatPairing = await Pairing.deploy()       
+    const Verifier = await ethers.getContractFactory("Verifier", deployer, { libraries: { Pairing: hardhatPairing.address,} });
+    const hardhatVerifier = await Verifier.deploy()   
+
+    //deploy quest
+    const Quest = await ethers.getContractFactory("Quest", deployer);
+    const hardhatQuest = await Quest.deploy(hardhatToken.address, hardhatVerifier.address)
     
 
     const hardhatTimelockController = await TimelockController.deploy(172800, [admin.address], [admin.address], admin.address); //set mindelay to 2 days(172800)
@@ -45,6 +56,8 @@ describe("Governor smart contracts", function () {
 
     console.log("hardhatTimelockController Deployed at", hardhatTimelockController.address);
     console.log("hardhatGovernor Deployed at", hardhatGovernor.address);
+    console.log("hardhatPairing Deployed at", hardhatPairing.address);
+    console.log("hardhatQuest Deployed at", hardhatQuest.address);
     console.log("TIMELOCK_ADMIN_ROLE", ethers.utils.keccak256(ethers.utils.toUtf8Bytes("TIMELOCK_ADMIN_ROLE")));
     console.log("PROPOSER_ROLE", ethers.utils.keccak256(ethers.utils.toUtf8Bytes("PROPOSER_ROLE")));
     console.log("EXECUTOR_ROLE", ethers.utils.keccak256(ethers.utils.toUtf8Bytes("EXECUTOR_ROLE")));   
@@ -72,6 +85,9 @@ describe("Governor smart contracts", function () {
     await hardhatToken.connect(admin).grantRole(ethers.utils.keccak256(ethers.utils.toUtf8Bytes("URI_ROLE")),hardhatTimelockController.address );
     await hardhatToken.connect(admin).grantRole(ethers.utils.keccak256(ethers.utils.toUtf8Bytes("DEFAULT_ADMIN_ROLE")),hardhatTimelockController.address );
 
+    //give Quest minter role on NFT token
+    await hardhatToken.connect(admin).grantRole(ethers.utils.keccak256(ethers.utils.toUtf8Bytes("MINTER_ROLE")),hardhatQuest.address );
+
 
     // Admin, Minter, Uri and Burner renounceRole on NFT token
 
@@ -88,6 +104,8 @@ describe("Governor smart contracts", function () {
       hardhatToken, 
       hardhatTimelockController,
       hardhatGovernor,
+      hardhatQuest,
+      hardhatVerifier,
       minter, 
       burner, 
       uri, 
@@ -96,7 +114,8 @@ describe("Governor smart contracts", function () {
       anyone, 
       member1,
       member2,
-      memberVoted
+      memberVoted,
+      memberQuestWinner
    };
   }
 
@@ -146,6 +165,18 @@ describe("Governor smart contracts", function () {
     expect(await hardhatToken.hasRole(ethers.utils.keccak256(ethers.utils.toUtf8Bytes("URI_ROLE")),hardhatTimelockController.address)).to.be.true; 
     expect(await hardhatToken.hasRole(ethers.utils.keccak256(ethers.utils.toUtf8Bytes("DEFAULT_ADMIN_ROLE")),hardhatTimelockController.address)).to.be.true;                       
   });
+
+
+  it("Checks Token NFT mint role is on quest  ", async function () {
+    const { hardhatToken, hardhatQuest} = await loadFixture(deployTokenFixture);
+
+    expect(await hardhatToken.hasRole(ethers.utils.keccak256(ethers.utils.toUtf8Bytes("MINTER_ROLE")),hardhatQuest.address)).to.be.true;                      
+  });
+
+
+
+  
+
 
 
 
@@ -271,5 +302,20 @@ describe("Governor smart contracts", function () {
     expect(await hardhatToken.balanceOf(memberVoted.address)).to.equal(1);
 
   });
+
+
+
+
+  it("Checks quest can mint NFT with correct answer", async function () {
+    const { hardhatToken, hardhatQuest, hardhatVerifier, memberQuestWinner} = await loadFixture(deployTokenFixture);
+    const proof = [["0x20ae5f121eb8e3f6c5e23a990e8294ffdfd3b2e69270e68c6939baedf122d767","0x08185e37be16c549166e0f73201f225bb4192e9332c24f401bb07040ded0fd27"],[["0x212817f53156d838f3f4b8adb18e7ca8de5bfa3ac7e9f59ea78c17c3bd5e1772","0x19926fe05a5f9217a5262ea6a1330dcc9d728c3cc31912c97d6ab21fb45caecc"],["0x1168e6cad99e25ebb29167ab3ac4fca3eb844c1b71854852064d8463ac2f7aac","0x2f7e9bd9eafd4bbd12b070fa29e723a2e4a6701c8cbd4c249e5dd44969858773"]],["0x11a506e98abeebc2bccb7dce2020a921f040cd6f9618826f56548cb59c5fe843","0x1d70d485256ea22ee66a5d20b6b8c6d8c69a425385fbea44fd7f37eb3dd2d8df"]];
+    const input = ["0x000000000000000000000000000000000000000000000000000000009f64a747","0x00000000000000000000000000000000000000000000000000000000e1b97f13","0x000000000000000000000000000000000000000000000000000000001fabb6b4","0x0000000000000000000000000000000000000000000000000000000047296c9b","0x000000000000000000000000000000000000000000000000000000006f0201e7","0x000000000000000000000000000000000000000000000000000000009fb3c535","0x000000000000000000000000000000000000000000000000000000006e6c77e8","0x000000000000000000000000000000000000000000000000000000009b6a806a"];
+    const isCorrect = await hardhatVerifier.verifyTx(proof,input);
+    console.log("Answer: ", isCorrect);
+    expect(await hardhatVerifier.verifyTx(proof,input)).to.be.true;
+    await hardhatQuest.issueMembership(memberQuestWinner.address,proof,input);
+    expect(await hardhatToken.balanceOf(memberQuestWinner.address)).to.equal(1);                      
+  });
+
 
 });

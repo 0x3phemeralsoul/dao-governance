@@ -1,5 +1,5 @@
 import { initialize } from "zokrates-js";
-import fs from 'fs/promises';
+import  fs  from 'fs/promises';
 
 
 
@@ -53,6 +53,7 @@ initialize().then((zokratesProvider) => {
       keypair.pk
     );
   
+
     // export solidity verifier
     const verifier = zokratesProvider.exportSolidityVerifier(keypair.vk);
     console.log(verifier);
