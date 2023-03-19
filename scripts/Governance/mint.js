@@ -1,6 +1,6 @@
 require("dotenv").config();
 require("@nomiclabs/hardhat-ethers");
-const contract = require("../artifacts/contracts/PCCMembershipNFT.sol/PCCMembershipNFT.json");
+const contract = require("../../artifacts/contracts/PCCMembershipNFT.sol/PCCMembershipNFT.json");
 const contractInterface = contract.abi;
 
 // https://hardhat.org/plugins/nomiclabs-hardhat-ethers.html#provider-object

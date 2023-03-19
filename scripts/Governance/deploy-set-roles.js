@@ -4,6 +4,12 @@ async function main() {
     const Token = await ethers.getContractFactory("PCCMembershipNFT");
     const Governor = await ethers.getContractFactory("PCCBoss");
     const TimelockController = await ethers.getContractFactory("TimelockController");
+    const Quest = await ethers.getContractFactory("Quest");
+/*     const Pairing = await ethers.getContractFactory("Pairing");
+    const hardhatPairing = await Pairing.deploy()     
+    await hardhatPairing.deployed();   */
+    const Verifier = await ethers.getContractFactory("Verifier");
+    const hardhatVerifier = await Verifier.deploy() 
     
     // Start deployment, returning a promise that resolves to a contract object
     const hardhatToken = await Token.deploy(
@@ -26,6 +32,13 @@ async function main() {
     const hardhatGovernor = await Governor.deploy(hardhatToken.address, hardhatTimelockController.address);
     console.log("hardhatGovernor Contract deployed to address:", hardhatGovernor.address);
 
+    const hardhatQuest = await Quest.deploy(hardhatToken.address, hardhatVerifier.address)
+    console.log("hardhatQuest Contract deployed to address:", hardhatQuest.address);
+    console.log("hardhatVerifier Deployed at", hardhatVerifier.address);
+    console.log("hardhatQuest Deployed at", hardhatQuest.address);
+
+
+
 
     //
     // PERMISSIONS
@@ -44,11 +57,12 @@ async function main() {
      await hardhatTimelockController.renounceRole(ethers.utils.keccak256(ethers.utils.toUtf8Bytes("EXECUTOR_ROLE")), process.env.DEPLOYER_PUBLIC_KEY);    
 
     
-    //set NFT roles to TimeLockController
+    //set NFT roles to TimeLockController and to Quest
     await hardhatToken.grantRole(ethers.utils.keccak256(ethers.utils.toUtf8Bytes("MINTER_ROLE")),hardhatTimelockController.address );
     await hardhatToken.grantRole(ethers.utils.keccak256(ethers.utils.toUtf8Bytes("BURNER_ROLE")),hardhatTimelockController.address );
     await hardhatToken.grantRole(ethers.utils.keccak256(ethers.utils.toUtf8Bytes("URI_ROLE")),hardhatTimelockController.address );
     await hardhatToken.grantRole(ethers.utils.keccak256(ethers.utils.toUtf8Bytes("DEFAULT_ADMIN_ROLE")),hardhatTimelockController.address );
+    await hardhatToken.grantRole(ethers.utils.keccak256(ethers.utils.toUtf8Bytes("MINTER_ROLE")),hardhatQuest.address );
 
 
      // Admin, Minter, Uri and Burner renounceRole on NFT token

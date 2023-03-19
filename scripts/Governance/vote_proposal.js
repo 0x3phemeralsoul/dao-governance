@@ -1,7 +1,7 @@
 require("dotenv").config();
 require("@nomiclabs/hardhat-ethers");
 const { time } = require("@nomicfoundation/hardhat-network-helpers");
-const PCCBosscontract = require("../artifacts/contracts/PCCBoss.sol/PCCBoss.json");
+const PCCBosscontract = require("../../artifacts/contracts/PCCBoss.sol/PCCBoss.json");
 const PCCBosscontractInterface = PCCBosscontract.abi;
 
 // https://hardhat.org/plugins/nomiclabs-hardhat-ethers.html#provider-object

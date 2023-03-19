@@ -37,9 +37,9 @@ describe("Governor smart contracts", function () {
     const TimelockController = await ethers.getContractFactory("TimelockController", deployer);
 
     //deploy verifier and pairing
-    const Pairing = await ethers.getContractFactory("Pairing", deployer);
-    const hardhatPairing = await Pairing.deploy()       
-    const Verifier = await ethers.getContractFactory("Verifier", deployer, { libraries: { Pairing: hardhatPairing.address,} });
+/*     const Pairing = await ethers.getContractFactory("Pairing", deployer);
+    const hardhatPairing = await Pairing.deploy()    */    
+    const Verifier = await ethers.getContractFactory("Verifier", deployer);
     const hardhatVerifier = await Verifier.deploy()   
 
     //deploy quest
@@ -57,6 +57,7 @@ describe("Governor smart contracts", function () {
     console.log("hardhatTimelockController Deployed at", hardhatTimelockController.address);
     console.log("hardhatGovernor Deployed at", hardhatGovernor.address);
     console.log("hardhatPairing Deployed at", hardhatPairing.address);
+    console.log("hardhatVerifier Deployed at", hardhatVerifier.address);
     console.log("hardhatQuest Deployed at", hardhatQuest.address);
     console.log("TIMELOCK_ADMIN_ROLE", ethers.utils.keccak256(ethers.utils.toUtf8Bytes("TIMELOCK_ADMIN_ROLE")));
     console.log("PROPOSER_ROLE", ethers.utils.keccak256(ethers.utils.toUtf8Bytes("PROPOSER_ROLE")));

@@ -1,10 +1,10 @@
 require('dotenv').config();
 
-const TimelockControllercontract = require("../artifacts/@openzeppelin/contracts/governance/TimelockController.sol/TimelockController.json");
+const TimelockControllercontract = require("../../artifacts/@openzeppelin/contracts/governance/TimelockController.sol/TimelockController.json");
 const TimelockControllercontractInterface = TimelockControllercontract.abi;
-const PCCBosscontract = require("../artifacts/contracts/PCCBoss.sol/PCCBoss.json");
+const PCCBosscontract = require("../../artifacts/contracts/PCCBoss.sol/PCCBoss.json");
 const PCCBosscontractInterface = PCCBosscontract.abi;
-const NFTcontract = require("../artifacts/contracts/PCCMembershipNFT.sol/PCCMembershipNFT.json");
+const NFTcontract = require("../../artifacts/contracts/PCCMembershipNFT.sol/PCCMembershipNFT.json");
 const NFTcontractInterface = NFTcontract.abi;
 
 // https://hardhat.org/plugins/nomiclabs-hardhat-ethers.html#provider-object
