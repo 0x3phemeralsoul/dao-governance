@@ -72,7 +72,12 @@ The [PCCBoss](./contracts/PCCBoss.sol) Contract is a [Governor OpenZeppelin](htt
 
 # OFFICIAL DEPLOYMENTS
 
-## PALM MAINNET CONTRACTS
+
+## PALM MAINNET
+
+Use `mainnet` branch
+
+### CONTRACTS
 [PCCNFTmembership](./contracts/PCCMembershipNFT.sol) Contract deployed to address: 0x5FbDB2315678afecb367f032d93F642f64180aa3                                                                                
 [TimelockController](./contracts/PCCBoss.sol) Contract deployed to address: 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512                                                                            
 [PCCBoss](./contracts/PCCBoss.sol) (Governor OZ) Contract deployed to address: 
@@ -83,7 +88,10 @@ The [PCCBoss](./contracts/PCCBoss.sol) Contract is a [Governor OpenZeppelin](htt
 
 [Verifier](./contracts/verifier.sol) Contract deployed to address:
 
-#### PALM TESTNET CONTRACTS
+## PALM TESTNET 
+Use `testnet` branch
+
+### CONTRACTS
 
 [PCCNFTmembership](./contracts/PCCMembershipNFT.sol) Contract deployed to address: 0x5FbDB2315678afecb367f032d93F642f64180aa3                                                                                
 [TimelockController](./contracts/PCCBoss.sol) Contract deployed to address: 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512                                                                            
