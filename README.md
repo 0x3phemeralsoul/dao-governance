@@ -70,7 +70,14 @@ The [PCCBoss](./contracts/PCCBoss.sol) Contract is a [Governor OpenZeppelin](htt
 
 
 
-# OFFICIAL DEPLOYMENTS
+# ON-CHAIN OFFICIAL DEPLOYMENTS
+
+On-chain governance votes are used to make changes to the PCC DAO protocol which consists, at launch, of 4 main contracts:
+
+[PCCNFTmembership](./contracts/PCCMembershipNFT.sol)
+[TimelockController](./contracts/PCCBoss.sol)
+[PCCBoss](./contracts/PCCBoss.sol)
+[Quest](./contracts/quest.sol)
 
 
 ## PALM MAINNET
@@ -104,6 +111,8 @@ Use `testnet` branch
 [Verifier](./contracts/verifier.sol) Contract deployed to address:
 
 # OFF-CHAIN GOVERNANCE
+
+Off-chain votes through Snapshot.org are used to make changes in off-chain DAO elements, such as the PIPs (PCC DAO improvement proposals)
 
 ## PALM Mainnet
 
