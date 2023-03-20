@@ -13,7 +13,7 @@ contract PCCBoss is Governor, GovernorSettings, GovernorCountingSimple, Governor
         Governor("PCC DAO")
         GovernorSettings(1 /* 1 block */, 120960 /* 1 week */, 1)
         GovernorVotes(_token)
-        GovernorVotesQuorumFraction(50)
+        GovernorVotesQuorumFraction(30)
         GovernorTimelockControl(_timelock)
     {}
 
