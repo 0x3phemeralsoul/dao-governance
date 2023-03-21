@@ -23,7 +23,7 @@ describe("Governor smart contracts", function () {
     console.log("Member voted", memberVoted.address);
     console.log("Member voted", memberQuestWinner.address);
 
-    const hardhatToken = await Token.deploy(minter.address, burner.address, uri.address, admin.address, '');
+    const hardhatToken = await Token.deploy(minter.address, burner.address, uri.address, admin.address, 'https://example.com/', 40);
 
     await hardhatToken.deployed();
     console.log("NFT Deployed at", hardhatToken.address);
@@ -37,8 +37,8 @@ describe("Governor smart contracts", function () {
     const TimelockController = await ethers.getContractFactory("TimelockController", deployer);
 
     //deploy verifier and pairing
-/*     const Pairing = await ethers.getContractFactory("Pairing", deployer);
-    const hardhatPairing = await Pairing.deploy()    */    
+    const Pairing = await ethers.getContractFactory("Pairing", deployer);
+    const hardhatPairing = await Pairing.deploy() 
     const Verifier = await ethers.getContractFactory("Verifier", deployer);
     const hardhatVerifier = await Verifier.deploy()   
 

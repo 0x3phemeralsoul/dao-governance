@@ -22,10 +22,16 @@ contract PCCMembershipNFT is
     ERC721Votes
 {
 
+
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
+    
+    mapping(uint256 => uint256) private tokenIdtoURI;
 
-    string baseTokenURI;
+    uint randNonce = 0;
+    uint public randModulus;
+    string public baseTokenURI;
+    string public baseExtension = ".json";
     
 
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
@@ -33,12 +39,14 @@ contract PCCMembershipNFT is
     bytes32 public constant URI_ROLE = keccak256("URI_ROLE");
     bytes32 public constant ADMIN_ROLE = keccak256("DEFAULT_ADMIN_ROLE");    
 
-    constructor(address minter, address burner, address uri, address admin, string memory _baseTokenURI) ERC721("TEST1PCC DAO Membership", "T1PCC") EIP712("PCC DAO", "1.0") {
+    constructor(address minter, address burner, address uri, address admin, string memory _baseTokenURI, uint _randModulus) ERC721("TEST1PCC DAO Membership", "T1PCC") EIP712("PCC DAO", "1.0") {
         _setupRole(MINTER_ROLE, minter);
         _setupRole(BURNER_ROLE, burner);
         _setupRole(URI_ROLE, uri);
         _setupRole(DEFAULT_ADMIN_ROLE, admin);
         baseTokenURI = _baseTokenURI;
+        randModulus = _randModulus;
+
 
 
     }
@@ -58,6 +66,7 @@ contract PCCMembershipNFT is
         _tokenIds.increment();
 
         uint256 newItemId = _tokenIds.current();
+        tokenIdtoURI[newItemId]=randMod();
         _delegate(recipient, recipient);
         _safeMint(recipient, newItemId);
 
@@ -110,7 +119,10 @@ contract PCCMembershipNFT is
     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
         _requireMinted(tokenId);
 
-        return baseTokenURI;
+        return bytes(baseTokenURI).length > 0
+            ? string(abi.encodePacked(baseTokenURI, tokenIdtoURI[tokenId], baseExtension))
+            : "";
+
     }
 
     /**
@@ -132,4 +144,31 @@ contract PCCMembershipNFT is
     {
         return super.supportsInterface(interfaceId);
     }
+
+    /**
+     * @dev     used for generating pseudo random numbers to select the URI for each mint
+     */
+
+     function randMod() internal returns(uint)
+    {
+        // increase nonce
+        randNonce++;
+        return uint(keccak256(abi.encodePacked(block.timestamp,msg.sender,randNonce))) % randModulus;
+    }
+
+    /**
+     * @dev setter for the NFT token URI.
+     */
+    function _setRandModulus(uint _randModulus) external onlyRole(URI_ROLE) {
+        randModulus = _randModulus;
+    }
+
+
+    /**
+     * @dev setter for the NFT metadata extension, set to .json on deployment.
+     */
+    function _setBaseExtension(string memory _newBaseExtension) external onlyRole(URI_ROLE) {
+        baseExtension = _newBaseExtension;
+    }
+
 }

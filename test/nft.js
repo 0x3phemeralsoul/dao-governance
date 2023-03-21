@@ -17,7 +17,7 @@ describe("NFT Token contract", function () {
 
 
 
-    const hardhatToken = await Token.deploy(minter.address, burner.address, uri.address, admin.address, '');
+    const hardhatToken = await Token.deploy(minter.address, burner.address, uri.address, admin.address, '', 40);
 
     await hardhatToken.deployed();
     console.log("Deployed", hardhatToken.address);
@@ -87,12 +87,19 @@ describe("NFT Token contract", function () {
     await hardhatToken.connect(uri)._setTokenURI("TEST")
     expect(
       await  hardhatToken.tokenURI(1)
-    ).to.equal("TEST");
+    ).to.include("TEST");
 
   //cannot update URI
-  await expect(
+   await expect(
        hardhatToken.connect(minter)._setTokenURI("TEST")
     ).to.revertedWith("AccessControl: account 0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266 is missing role 0x8e6595ef9afb2a8f70320f393f567bb7a0e6c4ed483caee30f90cc5fcd6659b4");
+
+    //can update randModulus
+    await hardhatToken.connect(uri)._setRandModulus(40)
+    expect(
+      await  hardhatToken.randModulus()
+    ).to.equal(40);
+
 });
 
 it("Granting minting rights", async function () {
