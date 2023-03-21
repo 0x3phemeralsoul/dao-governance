@@ -15,20 +15,42 @@ Add an `.env` file matching the variables found in `hardhat.config.js`:
 
 ### Deploy contract to Palm Testnet:
         
-        npx hardhat run scripts/deploy.js --network palm_testnet
+        npx hardhat run scripts/deploy-set-roles.js --network palm_testnet
 
 ### Deploy contract to Palm Mainnet:
 
-        npx hardhat run scripts/deploy.js --network palm_mainnet
+        npx hardhat run scripts/deploy-set-roles.js --network palm_mainnet
         
-### Mint NFT on Palm Testnet:
+### Propose a vote to PCC DAO:
 
-        npx hardhat run scripts/mint.js --network palm_testnet
-        
+        npx hardhat run scripts/propose_vote.js --network palm_mainnet
 
-### Mint NFT on Palm Mainnet:
+### Vote proposal on PCC DAO:
 
-        npx hardhat run scripts/mint.js --network palm_mainnet
+        npx hardhat run scripts/vote_proposal.js --network palm_mainnet
+
+### Queue a proposal whose voting period has ended with quorum and support on PCC DAO:
+
+        npx hardhat run scripts/queue_proposal.js --network palm_mainnet
+
+### Executes a queued proposal  PCC DAO:
+
+        npx hardhat run scripts/execute_proposal.js --network palm_mainnet
+
+### Cancel a proposal PCC DAO:
+
+        TODO
+
+### Drop a queued proposal PCC DAO:
+
+        TODO
+
+### submit an answer to a Quest in order to join PCC DAO:
+
+        npx hardhat run scripts/playQuest.js --network palm_mainnet
+
+
+
         
 # FEATURES
 
@@ -37,7 +59,7 @@ Add an `.env` file matching the variables found in `hardhat.config.js`:
  - Access control: Default Admin, Burner, Uri, Minter are passed to constructor
  - Only owner or burner can burn the token. This is to allow right to be forgotten to the owner and also allow for a DAO to kick out a soulbound member.
  - Only 1 token per address is allowed.
- - Uri role is able to update the tokenURI metadata.
+ - Uri role is able to update the tokenURI metadata, and set the amount of random metadata files to be used when minting NFTs. At launch each mitned NFT will get 1 out 40 possible images.
  - On mint, delegate() is called from []ERC721Votes.sol](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.8.0/contracts/token/ERC721/extensions/ERC721Votes.sol) so everytime we issue a membership, the voting power (1 vote, 1 member) is delegated to its holder automatically so the member can right away participate in on-chain governance without having to manually delegate to its own address which would be an extra UX friction for the member.
 
 
