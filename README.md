@@ -11,6 +11,8 @@ Add an `.env` file matching the variables found in `hardhat.config.js`:
 * PUBLIC_KEY
 * CONTRACT_ADDRESS
 
+you can use the .env.example file better.
+
 ## Usage
 
 ### Deploy contract to Palm Testnet:
