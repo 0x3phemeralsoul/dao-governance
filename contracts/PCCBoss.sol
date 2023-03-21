@@ -11,9 +11,9 @@ import "@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.so
 contract PCCBoss is Governor, GovernorSettings, GovernorCountingSimple, GovernorVotes, GovernorVotesQuorumFraction, GovernorTimelockControl {
     constructor(IVotes _token, TimelockController _timelock)
         Governor("PCC DAO")
-        GovernorSettings(1 /* 1 block */, 120960 /* 1 week */, 1)
+        GovernorSettings(1 /* 1 block */, 6 /* 1 week */, 1)
         GovernorVotes(_token)
-        GovernorVotesQuorumFraction(30)
+        GovernorVotesQuorumFraction(1)
         GovernorTimelockControl(_timelock)
     {}
 
